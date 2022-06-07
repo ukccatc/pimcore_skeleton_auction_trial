@@ -1,0 +1,20 @@
+{% extends 'layouts/layout.html.twig' %}
+
+{% block content %}
+    <h1 align="center">Welcome to our Auction</h1>
+    <div class="card-deck">
+    {% for item in paginator %}
+            <div class="card">
+                <img class="card-img-top" src="{{ item.image }}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.name }}</h5>
+                    <p class="card-text">{{ item.description|raw }}</p>
+                    <a href="{{ app.request.baseUrl }}/auction/detail/{{ item.identification }}" class="btn btn-primary">Details</a>
+                </div>
+            </div>
+    {% endfor %}
+    </div>
+
+
+    {% include 'layouts/pagination.html.twig' %}
+{% endblock %}

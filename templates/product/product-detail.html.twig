@@ -1,0 +1,129 @@
+{% extends 'layouts/layout.html.twig' %}
+
+{% block content %}
+
+    <div class="container-fluid">
+    {% if errorMessage is empty %}
+    {% else %}
+         <div class="alert alert-danger" role="alert">
+            {{ errorMessage }}
+        </div>
+    {% endif %}
+        <div class="row">
+                {% set start = tank.date_time %}
+                {% set end = tank.date_end %}
+                {% set difference = date(end).diff(date(start)) %}
+
+                {% set endJs = tank.date_end | date('U') %}
+
+                <div class="col">
+                {% if tank.image.thmbnail('tankDetail') is defined %}
+                     {{ tank.image.thumbnail('tankDetail').html({
+                        'imgAttributes': {
+                            'loading': 'eager',
+                            'class': 'card-img-top card-img-detail'
+                        }
+                    })|raw }}
+                {% endif %}
+{#            !!! Add blank thumbnail#}
+
+
+                </div>
+
+                <div class="col">
+                    <h2>{{ tank.name }}</h2>
+                    {{ tank.description|raw}}
+                    <p>Starting Price: {{ tank.price }}</p>
+                    <p id="Jstimer"></p>
+                    <p id="demo" data-foo="{{ endJs }}" hidden></p>
+                    <hr>
+
+
+                    {{ form_start(form) }}
+                    <div class="my-custom-class-for-errors">
+                        {{ form_errors(form) }}
+                    </div>
+                    <h2>Make your bid</h2>
+                    <div class="input-group flex-nowrap">
+                        <div class="input-group mb-3">
+                            <p>{{ form_row(form.user) }}</p>
+                        </div>
+                        <div class="input-group mb-3">
+                            <p>{{ form_row(form.email) }}</p>
+                        </div>
+                        <div class="input-group mb-3">
+                            <p>{{ form_row(form.bid)  }}</p>
+                        </div>
+                    </div>
+
+                    <p></p><button class="btn-primary btn" type="submit">Submit</button></p>
+                    {{ form_end(form) }}
+                    <hr>
+                    <p><a href="/auction" class="btn btn-primary">Back to Lots</a></p>
+                <div class="w-100"></div>
+        </div>
+    </div>
+
+
+{#   Add if statement of available bids#}
+    <h2 align="center">Actual Bids</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">User</th>
+            <th scope="col">Bid</th>
+            <th scope="col">Date&Time</th>
+        </tr>
+        </thead>
+        {% set myVal = 0 %}
+        {% for item in allRates %}
+            {% set myVal = myVal + 1 %}
+        <tbody>
+            <tr>
+                <th scope="row">{{ myVal}}</th>
+                <td>{{ item.user }}</td>
+                <td>{{ item.bid }}</td>
+                <td>{{ item.date }}</td>
+            </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+{% endblock %}
+
+{% block scriptblock %}
+        <script>
+            // Set the date we're counting down to
+            //var countDownDate = new Date("Jan 5, 2024 15:37:25").getTime();
+
+            var unixTimeStamp = document.getElementById('demo').dataset.foo;
+            var jsTimeStamp = new Date(unixTimeStamp*1000);
+
+            // Update the count down every 1 second
+            var x = setInterval(function() {
+
+                // Get today's date and time
+
+                var now = new Date().getTime();
+
+                // Find the distance between now and the count down date
+                var distance = jsTimeStamp - now;
+                // Time calculations for days, hours, minutes and seconds
+                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                // Display the result in the element with id="demo"
+                if (distance > 0) {
+                    document.getElementById("Jstimer").innerHTML ='Time Left : ' + days + " Days " + hours + " Hours "
+                    + minutes + " Minutes " + seconds + " Seconds " ;
+                }
+
+                // If the count down is finished, write some text
+                if (distance < 0) {
+                    clearInterval(x);
+                    document.getElementById("demo").innerHTML = "EXPIRED";
+                }
+            }, 1000);
+        </script>
+{% endblock %}

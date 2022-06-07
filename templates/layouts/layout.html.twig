@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    {% apply spaceless %}
+        {# add global stylesheets and scripts outside of any blocsk to add them to the helpers before any others assets are added #}
+        {# we use the view helper to have cache buster functionality #}
+        {% do pimcore_head_link().appendStylesheet('https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css',null,null,{integrity:"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T",crossorigin:"anonymous"}) %}
+        {% do pimcore_head_link().appendStylesheet('https://use.fontawesome.com/releases/v5.9.0/css/all.css') %}
+        {% do pimcore_head_link().appendStylesheet('https://use.fontawesome.com/releases/v5.7.0/css/all.css',null,null,{integrity:'sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ',crossorigin:'anonymous'}) %}
+        {% do pimcore_head_link().appendStylesheet(asset('/css/global.css')) %}
+        {% if editmode %}
+            {% do pimcore_head_link().appendStylesheet(asset('/css/editmode.css')) %}
+        {% endif %}
+        {% do pimcore_head_script().appendFile('https://code.jquery.com/jquery-3.3.1.slim.min.js',null,null,{ integrity:"sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo",crossorigin:"anonymous"}) %}
+        {% do pimcore_head_script().appendFile('https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js',null,null,{ integrity:"sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1",crossorigin:"anonymous"}) %}
+        {% do pimcore_head_script().appendFile('https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js',null,null,{ integrity:"sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM",crossorigin:"anonymous"}) %}
+        {% do pimcore_head_script().appendFile(asset('/js/main.js')) %}
+        {% if not editmode %}
+            {% do pimcore_head_script().appendFile(asset('/js/frontend.js')) %}
+        {% endif %}
+
+        {% if not document is defined or not document %}
+            {% set document = pimcore_document(1) %}
+        {% endif %}
+
+        {% if document is instanceof('\\Pimcore\\Model\\Document\\Link') %}
+            {# @var document \Pimcore\Model\Document\Link #}
+            {% set document = document.getObject() %}
+        {% endif %}
+
+        {% if document.getTitle() is not empty %}
+            {% do pimcore_head_title().set(document.getTitle()) %}
+        {% endif %}
+
+        {% if document.getDescription() is not empty %}
+            {% do pimcore_head_meta().setDescription(document.getDescription()) %}
+        {% endif %}
+
+    {% endapply %}
+
+    {# we're using the deferred extension here to make sure this block is rendered after all helper calls #}
+    {% block layout_head_meta deferred %}
+    {{ pimcore_head_title() }}
+    {{ pimcore_head_meta() }}
+
+    {% if pimcore_placeholder('canonical').count() %}
+        <link rel="canonical" href="{{ pimcore_placeholder('canonical') }}"/>
+    {% endif %}
+
+    {% endblock %}
+
+    {% block head_stylesheets deferred %}
+    {{ pimcore_head_link() }}
+    {% endblock %}
+
+</head>
+
+<body>
+<style type="text/css">
+    body {
+        padding:0;
+        margin: 0;
+        font-family: "Lucida Sans Unicode", Arial, sans-serif;
+        font-size: 14px;
+    }
+
+    #site {
+        margin: 0 auto;
+        width: 1360px;
+        padding: 100px 0 0 0;
+        color:#65615E;
+    }
+
+    .navbar-nav.menu-links li a {
+        text-transform: capitalize;
+    }
+
+    .card-img-detail {
+        max-height: 600px;
+    }
+
+    h1, h2, h3 {
+        font-size: 18px;
+        padding: 0 0 5px 0;
+        margin-bottom: 5px;
+    }
+
+    h3 {
+        font-size: 14px;
+        padding: 15px 0 5px 0;
+        margin-bottom: 5px;
+    }
+    .card {
+        border: none;
+        border: whitesmoke;
+    }
+    .card-img-top {
+        height: 100%;
+        border-bottom-left-radius: calc(1.25rem - 1px);
+        border-bottom-right-radius: calc(1.25rem - 1px);
+    }
+
+    .card-img-detail {
+        width:100%  ;
+    }
+
+    p {
+        padding: 0 0 5px 0;
+    }
+
+    a {
+        color: #000;
+    }
+
+    #site ul {
+        padding: 10px 0 10px 20px;
+        list-style: circle;
+    }
+
+    #sticky-footer {
+        margin-top: 100px;
+        background-color: rgba(0, 0, 0, .85) !important;
+    }
+
+    #navigation ul li ul {
+        display:none;
+    }
+
+    #navigation ul li.active ul {
+        display:block;
+    }
+
+    #navigation ul li.active ul li ul {
+        display:none;
+    }
+
+    #navigation ul li.active ul li.active ul {
+        display:block;
+    }
+
+    #navigation ul li.active ul li.active ul li ul {
+        display:none;
+    }
+
+    #navigation ul li.active ul li.active ul li.active ul{
+        display:block;
+    }
+
+</style>
+{% if not document is defined or not document %}
+    {% set document = pimcore_document(1) %}
+{% endif %}
+
+
+<nav class="navbar navbar-expand-md navbar-dark sticky-top py-1 site-header {{ document.getProperty('header_color') }}">
+
+    {# get the document which should be used to start in navigation | default home #}
+    {% set navStartNode = document.getProperty('navigation_root') %}
+
+    {% if not navStartNode is instanceof('\\Pimcore\\Model\\Document') %}
+        {% set navStartNode = pimcore_document(1) %}
+    {% endif %}
+
+    {% set mainNavigation = pimcore_build_nav({
+        active: document,
+        root: navStartNode
+    }) %}
+
+
+
+    <div class="container">
+
+        {#Logo Image#}
+        <a class="py-2 mb-2" href="{{ navStartNode }}">
+            <img id="logo" src="{{ asset('/static/images/tank-logo.svg') }}" alt="Classic Cars - Pimcore Demo">
+        </a>
+        {#responsive burger menu icon#}
+        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        {#main header#}
+        <div class="navbar-collapse collapse" id="navbarCollapse">
+
+            {{
+            pimcore_render_nav(mainNavigation, 'menu', 'renderMenu', {
+                maxDepth: 2,
+                ulClass: {
+                    0: 'navbar-nav menu-links ml-4 m-auto',
+                    1: 'dropdown dropdown-menu',
+                    'default': 'dropdown-menu dropdown-submenu'
+                }
+            })
+            }}
+        </div>
+    </div>
+</nav>
+
+{#<div class="my-breadcrumbs">#}
+{#    <a href="/">{{ 'Home'|trans }}</a> >#}
+{#    {{ pimcore_render_nav(mainNavigation, 'breadcrumbs') }}#}
+{#</div>#}
+
+<div id="site">
+    {% block content %}
+    {% endblock %}
+</div>
+
+{#<div class="my-sidebar-menu">#}
+{#    {% set sideNav = pimcore_build_nav({active: document, root: navStartNode, htmlMenuPrefix: 'my-nav-'}) %}#}
+
+{#    {{ pimcore_render_nav(sideNav, 'menu', 'renderMenu', {#}
+{#        ulClass: 'nav my-sidenav',#}
+{#        expandSiblingNodesOfActiveBranch: true#}
+{#    }) }}#}
+{% block scriptblock %}
+{% endblock %}
+</div>
+</body>
+<footer id="sticky-footer" class="flex-shrink-0 py-4 bg-dark text-white-50">
+    <div class="container text-center">
+        <a><small>ukccatc@gmail.com</small></a>
+    </div>
+</footer>
+</html>

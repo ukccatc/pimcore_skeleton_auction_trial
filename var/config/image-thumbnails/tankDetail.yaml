@@ -1,0 +1,27 @@
+pimcore:
+    assets:
+        image:
+            thumbnails:
+                definitions:
+                    tankDetail:
+                        items:
+                            -
+                                method: contain
+                                arguments:
+                                    width: 700
+                                    height: 600
+                                    forceResize: true
+                        medias: {  }
+                        name: tankDetail
+                        description: ''
+                        group: ''
+                        format: SOURCE
+                        quality: 85
+                        highResolution: 0.0
+                        preserveColor: false
+                        preserveMetaData: false
+                        rasterizeSVG: false
+                        downloadable: false
+                        modificationDate: 1653991507
+                        creationDate: 1653991266
+                        preserveAnimation: false
